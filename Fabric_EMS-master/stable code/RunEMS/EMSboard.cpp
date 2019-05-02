@@ -66,7 +66,6 @@ bool EMSboard::step()
   {
     setLEDBrightness(bitRead(getSwitchState(), 1), (int)analogRead(pots[2])/4);
     
-    if (bitRead(getSwitchState(), 2) != bitRead(switchState,2))
     {
       switchLED(2);
       int _freq = (int)(analogRead(pots[0])/4);
@@ -115,4 +114,3 @@ int EMSboard::getChannelamp(int _chan)
 {
   return channels[_chan].get_amp();
 }
-

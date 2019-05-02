@@ -9,6 +9,10 @@ EMSboard board;
 //They have to sit here unfortunately due to programming challenges
 IntervalTimer freqTimer1, freqTimer2, pwmTimer1, pwmTimer2;
 
+int sensorPin = A0;
+int sensorvalue = 0;
+int ledPin =13;
+
 //In total the Teensy offers 4 interval timers, we use them all.
 //There are two frequency timers, that trigger the below two functions
 //for example, the below functions might run at 80Hz and 60Hz, respectively,
@@ -61,19 +65,27 @@ void create_timers()
 //Set up the board, and the timers, and start some very light stimulation.
 //(You probably couldn't feel it.)
 void setup() {
+  pinMode(ledPin, OUTPUT);
   Serial.begin(9600);
   board.init();
   create_timers();
 
-  board.stimulate(0,80,120,3);
-  board.stimulate(1,60,140,3);
+  //int channel, int _freq, int _pwm, int _amp
+  board.stimulate(0,80,70,1);
+  board.stimulate(1,60,70,1);
 }
 
 //This function runs all the time.
 //At the moment, it looks for updates to the blue potentiometers on the board
 //and the red switches. If it finds switch updates, it calls create_timers
 //to update the timers. 
+int sensorValue = 0;
 void loop() {
+ sensorValue = analogRead(sensorPin);
+ digitalWrite(ledPin, HIGH);
+ delay(sensorValue);
+ digitalWrite(ledPin, LOW);
+ delay(sensorValue);
  if (board.step()) create_timers();
 
  // Check whether any control input has been given
