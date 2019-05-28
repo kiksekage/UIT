@@ -1,7 +1,10 @@
 const int FSR_PIN = A0; // Pin connected to FSR/resistor divider
 const int FSR_PIN1 = A1;
 const int FSR_PIN2 = A2;
-const int APINS [3] = { A0, A1, A2 };
+const int FSR_PIN3 = A3;
+const int FSR_PIN4 = A4;
+const int FSR_PIN5 = A5;
+const int APINS [6] = { A0, A1, A2, A3, A4, A5 };
 
 const int LED_PIN1 = 13;
 const float VCC = 4.98; // Measured voltage of Ardunio 5V line
@@ -9,10 +12,13 @@ const float R_DIV = 4700.0; // Measured resistance of 3.3k resistor
 
 void setup() 
 {
-  Serial.begin(19200);
+  Serial.begin(9600);
   pinMode(FSR_PIN, INPUT);
   pinMode(FSR_PIN1, INPUT);
   pinMode(FSR_PIN2, INPUT);
+  pinMode(FSR_PIN3, INPUT);
+  pinMode(FSR_PIN4, INPUT);
+  pinMode(FSR_PIN5, INPUT);
   pinMode(LED_PIN1, OUTPUT);
 }
 
