@@ -6,6 +6,8 @@ See https://www.assembla.com/spaces/portaudio/subversion/source/HEAD/portaudio/t
 """
 import argparse
 import logging
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 
 def int_or_str(text):
@@ -29,6 +31,7 @@ parser.add_argument('-b', '--blocksize', type=int, help='block size')
 parser.add_argument('-l', '--latency', type=float, help='latency in seconds')
 args = parser.parse_args()
 
+#fig, ax1 = plt.subplots(1, figsize=(7,7))
 
 try:
     import sounddevice as sd
@@ -40,7 +43,27 @@ try:
         if status:
             print(status)
         outdata[:] = indata
-        outdata.tofile("testing.txt", format="%d")
+
+        """global testing
+
+        testing = indata
+        testing = numpy.fft.rfft2(testing)
+        
+        #testing[:10, :] = 0.0
+        #testing[500:, :] = 0.0
+        
+        testing = numpy.fft.ifft2(testing) """
+
+    """
+    def update_plot(frame):
+        global testing
+        global line_fft
+        print(numpy.max(testing))
+        ax1.clear()
+        line_fft, = ax1.semilogx(numpy.linspace(0, 20000, 512), testing[:,0], '-', lw=2)
+        return line_fft,
+    
+    ani = FuncAnimation(fig, update_plot, interval=25, blit=True) """
 
     with sd.Stream(device=(args.input_device, args.output_device),
                    samplerate=args.samplerate, blocksize=args.blocksize,
@@ -49,6 +72,7 @@ try:
         print('#' * 80)
         print('press Return to quit')
         print('#' * 80)
+        #plt.show()
         input()
 except KeyboardInterrupt:
     parser.exit('\nInterrupted by user')
