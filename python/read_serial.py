@@ -3,7 +3,7 @@ from playsound import playsound
 import sounddevice as sd
 import numpy  # Make sure NumPy is loaded before it is used in the callback
 assert numpy  # avoid "imported but unused" message (W0611)
-import pandas
+#import pandas
 
 def int_or_str(text):
     """Helper function for argument parsing."""
@@ -63,12 +63,12 @@ class Foot(object):
   # called when the user hits with the heel first on the floor
   def on_heel_first(self):
     print('heel first')
-    playsound('air-horn-club-sample_1.mp3')
+    #playsound('air-horn-club-sample_1.mp3')
 
   # called when the user hits the floor with the ball of this foot first
   def on_ball_first(self):
     print('ball first')
-    playsound('-click-nice_3.mp3')
+    #playsound('-click-nice_3.mp3')
 
   # called when the user does a perfect jump and lands on the heel and ball on the same time (rather unlikely)
   def on_flat_foot(self):
@@ -187,13 +187,14 @@ try:
                      channels=args.channels, callback=callback):
     
     while True:
-      read_serial = ser.readline()
+      read_serial = str(ser.readline())
       found = re.findall("([0-9]+): ([0-9]+\.?[0-9]+)", read_serial)
       for pin, v in found:
         # fsr output
         v = float(v)
         # pin on the arduino
-        pin = int(pin)
+        pin = int(pin
+)
         # when the value is over some threshold turn the pin on, when it goes under, turn it off
         if(v > args.threshold):
           if(pin in left_foot.pins): left_foot.on(pin)
