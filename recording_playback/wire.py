@@ -22,6 +22,20 @@ def int_or_str(text):
     except ValueError:
         return text
 
+#(-10,10)
+def left_right_sound(indata, factor):
+    if (factor > 0): #Play sound to right ear
+        return numpy.c_[indata[:,0], indata[:,1]*(1+(factor/3))]
+    elif (factor < 0): #Play sound to left ear 
+        return numpy.c_[indata[:,0]*(1+(abs(factor)/3)), indata[:,1]]
+    else: #Do nothing
+        return indata
+
+def left_sound(indata):
+    return left_right_sound(indata,-3)*2
+
+def right_sound(indata):
+    return right_sound(indata,3)*2
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('-i', '--input-device', type=int_or_str,
@@ -57,7 +71,9 @@ try:
         
         #testing = numpy.fft.ifft2(testing)
         #testing = numpy.real(testing)
+
         outdata[:] = indata*2
+        #outdata[:] = indata*2
 
         """
 
@@ -85,7 +101,7 @@ try:
     with sd.Stream(device=(args.input_device, args.output_device),
     samplerate=args.samplerate, blocksize=args.blocksize,
     dtype=args.dtype, latency=args.latency,
-    channels=args.channels, callback=callback) as a, sd.Stream(device=('USB Audio Device', args.output_device),
+    channels=args.channels, callback=callback) as a, sd.Stream(device=(1, args.output_device),
     samplerate=args.samplerate, blocksize=args.blocksize,
     dtype=args.dtype, latency=args.latency,
     channels=args.channels, callback=callback) as b:
