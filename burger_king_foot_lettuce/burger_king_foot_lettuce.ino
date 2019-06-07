@@ -1,3 +1,12 @@
+#include "SevSeg.h"
+SevSeg sevseg; 
+
+const int buttonPin = 10;
+int buttonState = 0;
+int intState = 0;
+int numTests = 10;
+bool pressed = false;
+
 const int FSR_PIN = A0; // Pin connected to FSR/resistor divider
 const int FSR_PIN1 = A1;
 const int FSR_PIN2 = A2;
@@ -6,7 +15,7 @@ const int FSR_PIN4 = A4;
 const int FSR_PIN5 = A5;
 const int APINS [6] = { A0, A1, A2, A3, A4, A5 };
 
-const int LED_PIN1 = 13;
+const int LED_PIN = 13;
 const float VCC = 4.98; // Measured voltage of Ardunio 5V line
 const float R_DIV = 4700.0; // Measured resistance of 3.3k resistor
 
@@ -19,7 +28,19 @@ void setup()
   pinMode(FSR_PIN3, INPUT);
   pinMode(FSR_PIN4, INPUT);
   pinMode(FSR_PIN5, INPUT);
-  pinMode(LED_PIN1, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
+
+  byte numDigits = 1;
+  byte digitPins[] = {};
+  byte segmentPins[] = {6, 5, 2, 3, 4, 7, 8, 9};
+  bool resistorsOnSegments = true;
+
+  byte hardwareConfig = COMMON_CATHODE; 
+  sevseg.begin(hardwareConfig, numDigits, digitPins, segmentPins, resistorsOnSegments);
+  sevseg.setBrightness(90);
+
+  // initialize the pushbutton pin as an input:
+  pinMode(buttonPin, INPUT);
 }
 
 void loop() 
@@ -53,16 +74,38 @@ void loop()
       else
         force =  fsrG / 0.000000642857;
 
-      digitalWrite(LED_PIN1,HIGH);
+      digitalWrite(LED_PIN,HIGH);
     }
 
     Serial.print(pin); Serial.print(": "); Serial.print(force); Serial.print(" ");  
     _blink = true;
   }
+
+  // read the state of the pushbutton value:
+  buttonState = digitalRead(buttonPin);
+    
+
+  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+  if (buttonState == HIGH and !pressed) {
+    pressed = true;
+    intState = (intState+1)%numTests;
+    sevseg.setNumber(intState);
+    sevseg.refreshDisplay();
+    // turn LED on:
+    digitalWrite(ledPin, HIGH);
+  } else {
+    // turn LED off:
+    digitalWrite(ledPin, LOW);
+  }
+
+  if(buttonState == LOW) {
+    pressed = false;
+  }
   
   if (_blink) {
+    Serial.print("state: "); Serial.print(intState); Serial.print(" ");
     Serial.println("uT");
-    digitalWrite(LED_PIN1,LOW);
+    digitalWrite(LED_PIN,LOW);
   }
   delay(200);
 }

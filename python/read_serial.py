@@ -28,7 +28,7 @@ parser.add_argument('-b', '--blocksize', type=int, help='block size')
 parser.add_argument('-l', '--latency', type=float, help='latency in seconds')
 args = parser.parse_args()
 
-# ser = serial.Serial('/dev/ttyACM0',9600)
+#ser = serial.Serial('/dev/ttyACM0',9600)
 ser = serial.Serial('/dev/ttyUSB0',9600)
 
 class Foot(object):
@@ -173,6 +173,7 @@ class Foot(object):
 # 14 => A0, 15 => A1, ..., 19 => A5 on the arduino
 right_foot = Foot('right', 14, 16, 15)
 left_foot = Foot('left', 19, 18, 17)
+experiment = 0
 
 def callback(indata, outdata, frames, time, status):
     if right_foot.lifted():
@@ -187,8 +188,9 @@ try:
                      channels=args.channels, callback=callback):
     
     while True:
-      read_serial = ser.readline()
+      read_serial = str(ser.readline())
       found = re.findall("([0-9]+): ([0-9]+\.?[0-9]+)", read_serial)
+      print(found)
       for pin, v in found:
         # fsr output
         v = float(v)
@@ -201,6 +203,10 @@ try:
         else:
           if(pin in left_foot.pins): left_foot.off(pin)
           if(pin in right_foot.pins): right_foot.off(pin)
+
+      state = re.findall("state: (\d+)", read_serial)
+      experiment = int(state[0])
+      print(experiment)
 
     print('#' * 80)
     print('press Return to quit')
