@@ -61,8 +61,7 @@ try:
         # fsr output
         v = float(v)
         # pin on the arduino
-        pin = int(pin
-)
+        pin = int(pin)
         # when the value is over some threshold turn the pin on, when it goes under, turn it off
         if(v > args.threshold):
           if(pin in left_foot.pins): left_foot.on(pin)
