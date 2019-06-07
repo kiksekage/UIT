@@ -41,6 +41,9 @@ void setup()
 
   // initialize the pushbutton pin as an input:
   pinMode(buttonPin, INPUT);
+
+  sevseg.setNumber(0);
+  sevseg.refreshDisplay();
 }
 
 void loop() 
@@ -74,7 +77,7 @@ void loop()
       else
         force =  fsrG / 0.000000642857;
 
-      digitalWrite(LED_PIN,HIGH);
+      //digitalWrite(LED_PIN,HIGH);
     }
 
     Serial.print(pin); Serial.print(": "); Serial.print(force); Serial.print(" ");  
@@ -91,11 +94,6 @@ void loop()
     intState = (intState+1)%numTests;
     sevseg.setNumber(intState);
     sevseg.refreshDisplay();
-    // turn LED on:
-    digitalWrite(ledPin, HIGH);
-  } else {
-    // turn LED off:
-    digitalWrite(ledPin, LOW);
   }
 
   if(buttonState == LOW) {
@@ -105,7 +103,7 @@ void loop()
   if (_blink) {
     Serial.print("state: "); Serial.print(intState); Serial.print(" ");
     Serial.println("uT");
-    digitalWrite(LED_PIN,LOW);
+    //digitalWrite(LED_PIN,LOW);
   }
   delay(200);
 }

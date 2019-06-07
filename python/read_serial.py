@@ -176,6 +176,10 @@ left_foot = Foot('left', 19, 18, 17)
 experiment = 0
 
 def callback(indata, outdata, frames, time, status):
+
+    if(experiment == 1):
+      print('experiment: ' + str(experiment))
+
     if right_foot.lifted():
       outdata[:] = 0.0
     else:
@@ -190,7 +194,6 @@ try:
     while True:
       read_serial = str(ser.readline())
       found = re.findall("([0-9]+): ([0-9]+\.?[0-9]+)", read_serial)
-      print(found)
       for pin, v in found:
         # fsr output
         v = float(v)
@@ -207,7 +210,6 @@ try:
 
       state = re.findall("state: (\d+)", read_serial)
       experiment = int(state[0])
-      print(experiment)
 
     print('#' * 80)
     print('press Return to quit')

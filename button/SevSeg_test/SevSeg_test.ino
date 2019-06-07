@@ -25,6 +25,9 @@ void setup(){
     pinMode(buttonPin, INPUT);
 
     Serial.begin(9600);
+
+    sevseg.setNumber(intState);
+    sevseg.refreshDisplay();
 }
 
 void loop(){
