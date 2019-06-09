@@ -77,7 +77,7 @@ void loop()
       else
         force =  fsrG / 0.000000642857;
 
-      //digitalWrite(LED_PIN,HIGH);
+      digitalWrite(LED_PIN,HIGH);
     }
 
     Serial.print(pin); Serial.print(": "); Serial.print(force); Serial.print(" ");  
@@ -103,7 +103,7 @@ void loop()
   if (_blink) {
     Serial.print("state: "); Serial.print(intState); Serial.print(" ");
     Serial.println("uT");
-    //digitalWrite(LED_PIN,LOW);
+    digitalWrite(LED_PIN,LOW);
   }
   delay(200);
 }

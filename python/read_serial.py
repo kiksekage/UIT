@@ -40,8 +40,8 @@ experiment = 0
 
 def callback(indata, outdata, frames, time, status):
 
-    if(experiment == 1):
-      print('experiment: ' + str(experiment))
+    print('experiment: ' + str(experiment))
+    #if(experiment == 1):
 
     if right_foot.lifted():
       outdata[:] = 0.0
