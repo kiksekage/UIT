@@ -5,6 +5,7 @@ See https://www.assembla.com/spaces/portaudio/subversion/source/HEAD/portaudio/t
 
 """
 import argparse
+import librosa
 import logging
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
@@ -57,8 +58,9 @@ try:
         
         #testing = numpy.fft.ifft2(testing)
         #testing = numpy.real(testing)
-        outdata[:] = indata*2
-
+        
+        outdata[:,0] = librosa.effects.pitch_shift(indata[:, 0], args.samplerate, n_steps=4)
+        outdata[:,1] = indata[:,1]
         """
 
         testing = indata
@@ -82,6 +84,7 @@ try:
     ani = FuncAnimation(fig, update_plot, interval=1, blit=False)
 
     # sample command: python3 wire.py -s 100000 -c 1 -l 0.01
+    '''
     with sd.Stream(device=(args.input_device, args.output_device),
     samplerate=args.samplerate, blocksize=args.blocksize,
     dtype=args.dtype, latency=args.latency,
@@ -89,6 +92,11 @@ try:
     samplerate=args.samplerate, blocksize=args.blocksize,
     dtype=args.dtype, latency=args.latency,
     channels=args.channels, callback=callback) as b:
+    '''
+    with sd.Stream(device=(args.input_device, args.output_device),
+    samplerate=args.samplerate, blocksize=args.blocksize,
+    dtype=args.dtype, latency=args.latency,
+    channels=args.channels, callback=callback):
         print('#' * 80)
         print('press Return to quit')
         print('#' * 80)
