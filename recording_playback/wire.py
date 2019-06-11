@@ -143,14 +143,15 @@ class Foot(object):
     return not self.heel() and not self.ball()
 
 import argparse
-import librosa
+#import librosa
 import logging
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+#import matplotlib.pyplot as plt
+#from matplotlib.animation import FuncAnimation
 import sounddevice as sd
 import numpy  # Make sure NumPy is loaded before it is used in the callback
 assert numpy  # avoid "imported but unused" message (W0611)
-import scipy.fftpack
+#import pandas
+#import scipy.fftpack
 
 
 def int_or_str(text):
@@ -189,13 +190,9 @@ parser.add_argument('-b', '--blocksize', type=int, help='block size')
 parser.add_argument('-l', '--latency', type=float, help='latency in seconds')
 args = parser.parse_args()
 
-experiment = 0
-right_foot = Foot('right', 14, 16, 15)
-left_foot = Foot('left', 19, 18, 17)
-
-fig, ax1 = plt.subplots(1, figsize=(7,7))
-ax1.set_ylim(0,1)
-line_fft, = ax1.plot(numpy.linspace(0, 512, 512), numpy.asarray([0]*512))
+#fig, ax1 = plt.subplots(1, figsize=(7,7))
+#ax1.set_ylim(0,1)
+#line_fft, = ax1.plot(numpy.linspace(0, 512, 512), numpy.asarray([0]*512))
 
 
 try:
@@ -235,17 +232,17 @@ try:
         #testing = indata
 
         #testing = indata[:, 0]
-        testing = numpy.abs(scipy.fftpack.fft(indata)[:, 0])
+        #testing = numpy.abs(scipy.fftpack.fft(indata)[:, 0])
         
         #testing[:10, :] = 0.0
         #testing[500:, :] = 0.0
         
         #testing = numpy.fft.ifft2(testing)
         #testing = numpy.real(testing)
-        print(indata.shape)
-        print(outdata.shape)
-        outdata[:,0] = librosa.effects.pitch_shift(indata[:, 0], args.samplerate, n_steps=4)
-        outdata[:,1] = indata
+        
+        #outdata[:,0] = librosa.effects.pitch_shift(indata[:, 0], args.samplerate, n_steps=4)
+        #outdata[:,1] = indata[:,1]
+        outdata[:] = indata[:]
         """
 
         testing = indata
@@ -266,7 +263,7 @@ try:
         line_fft.set_ydata(testing)
         return line_fft,
     
-    ani = FuncAnimation(fig, update_plot, interval=1, blit=False)
+    #ani = FuncAnimation(fig, update_plot, interval=1, blit=False)
 
     # sample command: python3 wire.py -s 100000 -c 1 -l 0.01
     

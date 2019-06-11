@@ -19,7 +19,9 @@ parser.add_argument(
     help='threshold for the force sensor values')
 parser.add_argument('-i', '--input', type=int_or_str,
                     help='input device ID or substring')
-parser.add_argument('-o', '--output-device', type=int_or_str,
+parser.add_argument('-lo', '--output-left', type=int_or_str,
+                    help='output device ID or substring')
+parser.add_argument('-ro', '--output-right', type=int_or_str,
                     help='output device ID or substring')
 parser.add_argument('-c', '--channels', type=int, default=2,
                     help='number of channels')
@@ -45,9 +47,9 @@ def callback(indata, outdata, frames, time, status):
       print(numpy.argmax(indata))
 
     if right_foot.lifted():
-      outdata[:] = 0.0
+      outdata[:] = indata
     else:
-      outdata[:] = 0.0
+      outdata[:] = indata
 
 
 try:
