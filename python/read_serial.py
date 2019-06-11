@@ -13,6 +13,39 @@ def int_or_str(text):
     except ValueError:
         return text
 
+
+def left_right_sound(indata, factor):
+    if (factor > 0): #Play sound to right ear
+        return numpy.c_[indata[:,0], indata[:,1]*(1+(factor/3))]
+    elif (factor < 0): #Play sound to left ear 
+        return numpy.c_[indata[:,0]*(1+(abs(factor)/3)), indata[:,1]]
+    else: #Do nothing
+        return indata
+
+def left_sound(indata):
+    return left_right_sound(indata,-3)*2
+
+def right_sound(indata):
+    return left_right_sound(indata,3)*2
+
+#In order to avoid lag, blocksize has to be increased. On the other hand, it introduces a delay
+def higher_pitch(indata):
+    #parser.add_argument('-b', '--blocksize', type=int, default=12000, help='block size')
+    return numpy.c_[librosa.effects.pitch_shift(indata[:, 0], args.samplerate, n_steps=1, bins_per_octave=2),
+            librosa.effects.pitch_shift(indata[:, 1], args.samplerate, n_steps=1, bins_per_octave=2)]
+
+#In order to avoid lag, blocksize has to be increased. On the other hand, it introduces a delay
+def lower_pitch(indata):
+    #parser.add_argument('-b', '--blocksize', type=int, default=12000, help='block size')
+    return numpy.c_[librosa.effects.pitch_shift(indata[:, 0], args.samplerate, n_steps=-1, bins_per_octave=2),
+            librosa.effects.pitch_shift(indata[:, 1], args.samplerate, n_steps=-1, bins_per_octave=2)]
+"""
+Delaying sound from one input device, can be done by controlling the blocksize. A higher blocksize delays the sound output.
+Can be done individually for callback_right or callback_left, when parsing input arguments.
+
+"""
+
+
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument(
     '-t', '--threshold', type=float, default=200, metavar='THRESHOLD',
@@ -44,13 +77,13 @@ def callback_left(indata, outdata, frames, time, status):
   if experiment == 0:
     pass
   elif experiment == 1:
-    pass
+    outdata[:] = left_sound(indata)*2
   elif experiment == 2:
-    pass
+    outdata[:] = right_sound(indata)*2
   elif experiment == 3:
-    pass
+    outdata[:] = higher_pitch(indata)*2
   elif experiment == 4:
-    pass
+    outdata[:] = lower_pitch(indata)*2
   else:
     outdata[:] = indata
 
@@ -58,13 +91,13 @@ def callback_right(indata, outdata, frames, time, status):
   if experiment == 0:
     pass
   elif experiment == 1:
-    pass
+    outdata[:] = left_sound(indata)*2
   elif experiment == 2:
-    pass
+    outdata[:] = right_sound(indata)*2
   elif experiment == 3:
-    pass
+    outdata[:] = higher_pitch(indata)*2
   elif experiment == 4:
-    pass
+    outdata[:] = lower_pitch(indata)*2
   else:
     outdata[:] = indata
 
