@@ -19,9 +19,7 @@ parser.add_argument(
     help='threshold for the force sensor values')
 parser.add_argument('-i', '--input', type=int_or_str,
                     help='input device ID or substring')
-parser.add_argument('-lo', '--output-left', type=int_or_str,
-                    help='output device ID or substring')
-parser.add_argument('-ro', '--output-right', type=int_or_str,
+parser.add_argument('-o', '--output', type=int_or_str,
                     help='output device ID or substring')
 parser.add_argument('-c', '--channels', type=int, default=2,
                     help='number of channels')
