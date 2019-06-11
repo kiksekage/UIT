@@ -1,4 +1,5 @@
-import serial, re, argparse
+import re, argparse
+import serial
 from foot import Foot
 import sounddevice as sd
 import numpy  # Make sure NumPy is loaded before it is used in the callback
@@ -31,7 +32,7 @@ parser.add_argument('-l', '--latency', type=float, help='latency in seconds')
 args = parser.parse_args()
 
 #ser = serial.Serial('/dev/ttyACM0',9600)
-#ser = serial.Serial('/dev/ttyUSB0',9600)
+ser = serial.Serial('/dev/tty.SLAB_USBtoUART',9600)
 
 # initialize the feet
 # 14 => A0, 15 => A1, ..., 19 => A5 on the arduino
@@ -40,19 +41,32 @@ left_foot = Foot('left', 19, 18, 17)
 experiment = 0
 
 def callback_left(indata, outdata, frames, time, status):
-
-    print(indata.shape)
-    print(outdata.shape)
-    print("left")
+  if experiment == 0:
+    pass
+  elif experiment == 1:
+    pass
+  elif experiment == 2:
+    pass
+  elif experiment == 3:
+    pass
+  elif experiment == 4:
+    pass
+  else:
     outdata[:] = indata
 
 def callback_right(indata, outdata, frames, time, status):
-
-    print(indata.shape)
-    print(outdata.shape)
-    print("right")
+  if experiment == 0:
+    pass
+  elif experiment == 1:
+    pass
+  elif experiment == 2:
+    pass
+  elif experiment == 3:
+    pass
+  elif experiment == 4:
+    pass
+  else:
     outdata[:] = indata
-
 
 try:
   with sd.Stream(device=(args.input_left, args.output),
@@ -63,7 +77,7 @@ try:
     dtype=args.dtype, latency=args.latency,
     channels=args.channels, callback=callback_right) as b:
     
-    """ while True:
+    while True:
       read_serial = str(ser.readline())
       found = re.findall("([0-9]+): ([0-9]+\.?[0-9]+)", read_serial)
       for pin, v in found:
@@ -80,7 +94,7 @@ try:
           if(pin in right_foot.pins): right_foot.off(pin)
 
       state = re.findall("state: (\d+)", read_serial)
-      experiment = int(state[0]) """
+      experiment = int(state[0])
 
     print('#' * 80)
     print('press Return to quit')
