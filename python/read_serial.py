@@ -17,11 +17,13 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument(
     '-t', '--threshold', type=float, default=200, metavar='THRESHOLD',
     help='threshold for the force sensor values')
-parser.add_argument('-li', '--left-input', type=int_or_str,
+parser.add_argument('-li', '--input-left', type=int_or_str,
                     help='input device ID or substring')
-parser.add_argument('-ri', '--right-input', type=int_or_str,
+parser.add_argument('-ri', '--input-right', type=int_or_str,
                     help='input device ID or substring')
-parser.add_argument('-o', '--output-device', type=int_or_str,
+parser.add_argument('-lo', '--output-left', type=int_or_str,
+                    help='output device ID or substring')
+parser.add_argument('-ro', '--output-right', type=int_or_str,
                     help='output device ID or substring')
 parser.add_argument('-c', '--channels', type=int, default=2,
                     help='number of channels')
@@ -42,19 +44,23 @@ experiment = 0
 
 def callback_left(indata, outdata, frames, time, status):
 
-    print('experiment: ' + str(experiment))
+    #print('experiment: ' + str(experiment))
     #if(experiment == 1):
+    
+    if numpy.max(indata) > 0:
+      print("left")
 
     if right_foot.lifted():
-      outdata[:] = 0.0
+      outdata[:] = indata
     else:
-      outdata[:] = 0.0
+      outdata[:] = indata
 
 def callback_right(indata, outdata, frames, time, status):
 
-    print('experiment: ' + str(experiment))
+    #print('experiment: ' + str(experiment))
     #if(experiment == 1):
-
+    if numpy.max(indata) > 0:
+      print("right")
     if left_foot.lifted():
       outdata[:] = indata
     else:
@@ -62,10 +68,10 @@ def callback_right(indata, outdata, frames, time, status):
 
 
 try:
-  with sd.Stream(device=(args.left_input, args.output_device),
+  with sd.Stream(device=(args.input_left, args.output_left),
     samplerate=args.samplerate, blocksize=args.blocksize,
     dtype=args.dtype, latency=args.latency,
-    channels=args.channels, callback=callback_left) as a, sd.Stream(device=(args.right_input, args.output_device),
+    channels=args.channels, callback=callback_left) as a, sd.Stream(device=(args.input_right, args.output_right),
     samplerate=args.samplerate, blocksize=args.blocksize,
     dtype=args.dtype, latency=args.latency,
     channels=args.channels, callback=callback_right) as b:
