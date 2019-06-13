@@ -132,6 +132,8 @@ def callback_right(indata, outdata, frames, time, status):
     outdata[:] = higher_pitch(indata)*2
   elif experiment == 4:
     outdata[:] = lower_pitch(indata)*2
+  elif experiment ==5:
+    outdate[:] = frequency_filter(indata)
   else:
     outdata[:] = indata
 
