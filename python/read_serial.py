@@ -52,7 +52,7 @@ def callback_left(indata, outdata, frames, time, status):
   elif experiment == 4:
     pass
   else:
-    outdata[:] = indata
+    outdata[:] = numpy.c_[indata[:, 0],indata[:, 0]]
 
 def callback_right(indata, outdata, frames, time, status):
   if experiment == 0:
@@ -66,7 +66,7 @@ def callback_right(indata, outdata, frames, time, status):
   elif experiment == 4:
     pass
   else:
-    outdata[:] = indata
+    outdata[:] = numpy.c_[indata[:, 0],indata[:, 0]]
 
 try:
   with sd.Stream(device=(args.input_left, args.output),
