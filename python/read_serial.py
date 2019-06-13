@@ -12,6 +12,38 @@ def int_or_str(text):
         return int(text)
     except ValueError:
         return text
+    
+def frequency_filter(indata):
+    lower_frequency=400
+    upper_frequency=1000
+    
+    #gaussian to smooth out noise of dft
+    smooth_window = gaussian(len(indata), std=0.25
+    
+    #calculates a signal shift to obtain desired frequency window. Window centers around zero initially
+    difference=(upper_frequency-lower_frequency)/2
+    difference_w=2*np.pi*(1/args.samplerate)*difference
+    shift_w=2*np.pi*(1/args.samplerate)*(difference+lower_frequency)
+    
+    #creates the data for the signal shift to be applied
+    x = np.linspace(-int(len(indata[:,0])/2), int(len(indata[:,0])/2), len(indata[:,0]))
+    shift=np.exp(1j*shift_w*x)
+    
+    #begin construction of sinc function to filter the frequency
+    x=x*(difference_w/np.pi)
+    x_t=np.sinc(x)
+    x_t=x_t*shift #shifts the window to appropriate frequency (once converted to frequency domain)
+                             
+    #convolves sound with window to filter out undesired frequencies
+    result=convolve(indata[:,0],x_t, mode='same')
+    
+    #convoles the filtered sound with a gaussian to smooth out introduced noise
+    result=convolve(result,smooth_window, mode='same')
+        
+    #packages data into correct format for output in two channels 
+    result=np.append(result.reshape(len(result),1),result.reshape(len(result),1),axis=1)
+    outdata[:] = result
+        
 
 
 def left_right_sound(indata, factor):
@@ -84,6 +116,8 @@ def callback_left(indata, outdata, frames, time, status):
     outdata[:] = higher_pitch(indata)*2
   elif experiment == 4:
     outdata[:] = lower_pitch(indata)*2
+  elif experiment ==5:
+    outdate[:] = frequency_filter(indata)
   else:
     outdata[:] = indata
 
