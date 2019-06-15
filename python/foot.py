@@ -75,8 +75,8 @@ class Foot(object):
       self._foot_state = 'foot'
     elif(self.lifted()):
       self._foot_state = 'lifted'
-    if(_old_state != '' and _old_state != self._foot_state):
-      self.on_state_change(_old_state)
+    #if(_old_state != '' and _old_state != self._foot_state):
+    #  self.on_state_change(_old_state)
 
   # returns the current state of the foot (heel/ball/foot/lifted)
   def state(self):

@@ -4,7 +4,8 @@ SevSeg sevseg;
 const int buttonPin = 10;
 int buttonState = 0;
 int intState = 0;
-int numTests = 10;
+int shuffledState = 0;
+int numTests = 5;
 bool pressed = false;
 
 const int FSR_PIN = A0; // Pin connected to FSR/resistor divider
@@ -18,6 +19,10 @@ const int APINS [6] = { A0, A1, A2, A3, A4, A5 };
 const int LED_PIN = 13;
 const float VCC = 4.98; // Measured voltage of Ardunio 5V line
 const float R_DIV = 4700.0; // Measured resistance of 3.3k resistor
+
+bool startUp = true;
+int _shuffled [5] = {0,1,2,3,4};
+int shuffled [5] = {0,1,2,3,4};
 
 void setup() 
 {
@@ -39,15 +44,21 @@ void setup()
   sevseg.begin(hardwareConfig, numDigits, digitPins, segmentPins, resistorsOnSegments);
   sevseg.setBrightness(90);
 
+  randomSeed(analogRead(FSR_PIN));
+
   // initialize the pushbutton pin as an input:
   pinMode(buttonPin, INPUT);
-
-  sevseg.setNumber(0);
-  sevseg.refreshDisplay();
 }
 
 void loop() 
 {
+  if(startUp){
+
+    startUp = false;
+    sevseg.setNumber(shuffled[0]);
+    sevseg.refreshDisplay();
+  }
+  
   int fsrADC;
   bool _blink = false;
   
@@ -92,7 +103,8 @@ void loop()
   if (buttonState == HIGH and !pressed) {
     pressed = true;
     intState = (intState+1)%numTests;
-    sevseg.setNumber(intState);
+    shuffledState = shuffled[intState];
+    sevseg.setNumber(shuffledState);
     sevseg.refreshDisplay();
   }
 
@@ -101,7 +113,7 @@ void loop()
   }
   
   if (_blink) {
-    Serial.print("state: "); Serial.print(intState); Serial.print(" ");
+    Serial.print("state: "); Serial.print(shuffledState); Serial.print(" ");
     Serial.println("uT");
     digitalWrite(LED_PIN,LOW);
   }
