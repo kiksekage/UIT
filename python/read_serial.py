@@ -2,8 +2,12 @@ import re, argparse
 import serial
 from foot import Foot
 import sounddevice as sd
+import librosa
+import time as Time
+import queue
 import numpy  # Make sure NumPy is loaded before it is used in the callback
 assert numpy  # avoid "imported but unused" message (W0611)
+import random
 #import pandas
 
 def int_or_str(text):
@@ -73,42 +77,45 @@ right_foot = Foot('right', 14, 16, 15)
 left_foot = Foot('left', 19, 18, 17)
 experiment = 0
 
+# read_serial.py -li 2 -ri 3 -o 1 -s 10000 -b 512 -c 1 -l 0.001
+
 def callback_left(indata, outdata, frames, time, status):
-  if experiment == 0:
-    pass
+  if the_foot.lifted():
+    outdata[:] = indata
+  elif experiment == 0:
+    outdata[:] = indata
   elif experiment == 1:
-    outdata[:] = left_sound(indata)*2
+    outdata[:,0] = librosa.effects.pitch_shift(indata[:,0], args.samplerate, n_steps=-1, bins_per_octave=2)
   elif experiment == 2:
-    outdata[:] = right_sound(indata)*2
+    outdata[:,0] = librosa.effects.pitch_shift(indata[:,0], args.samplerate, n_steps=1, bins_per_octave=2)
   elif experiment == 3:
-    outdata[:] = higher_pitch(indata)*2
+    outdata[:] = indata*1.25
   elif experiment == 4:
-    outdata[:] = lower_pitch(indata)*2
-  else:
-    outdata[:] = numpy.c_[indata[:, 0],indata[:, 0]]
+    outdata[:] = indata*1.5
 
 def callback_right(indata, outdata, frames, time, status):
-  if experiment == 0:
-    pass
+  if the_foot.lifted():
+    outdata[:] = indata
+  elif experiment == 0:
+    outdata[:] = indata
   elif experiment == 1:
-    outdata[:] = left_sound(indata)*2
+    outdata[:,0] = librosa.effects.pitch_shift(indata[:,0], args.samplerate, n_steps=-1, bins_per_octave=2)
   elif experiment == 2:
-    outdata[:] = right_sound(indata)*2
+    outdata[:,0] = librosa.effects.pitch_shift(indata[:,0], args.samplerate, n_steps=1, bins_per_octave=2)
   elif experiment == 3:
-    outdata[:] = higher_pitch(indata)*2
+    outdata[:] = indata*1.25
   elif experiment == 4:
-    outdata[:] = lower_pitch(indata)*2
-  else:
-    outdata[:] = numpy.c_[indata[:, 0],indata[:, 0]]
+    outdata[:] = indata*1.5
 
+the_foot = random.choice([right_foot, left_foot])
 try:
   with sd.Stream(device=(args.input_left, args.output),
     samplerate=args.samplerate, blocksize=args.blocksize,
     dtype=args.dtype, latency=args.latency,
-    channels=args.channels, callback=callback_left) as a, sd.Stream(device=(args.input_right, args.output),
+    channels=args.channels, callback=callback_left, clip_off=True) as a, sd.Stream(device=(args.input_right, args.output),
     samplerate=args.samplerate, blocksize=args.blocksize,
     dtype=args.dtype, latency=args.latency,
-    channels=args.channels, callback=callback_right) as b:
+    channels=args.channels, callback=callback_right, clip_off=True) as b:
     
     while True:
       read_serial = str(ser.readline())
@@ -127,12 +134,19 @@ try:
           if(pin in right_foot.pins): right_foot.off(pin)
 
       state = re.findall("state: (\d+)", read_serial)
-      experiment = int(state[0])
-
+      if experiment != int(state[0]):
+        print("#"*20)
+        the_foot = random.choice([right_foot, left_foot])
+        experiment = int(state[0])
+        print(the_foot.name)
+        print(int(state[0]))
+        print("#"*20)
+    
     print('#' * 80)
     print('press Return to quit')
     print('#' * 80)
     input()
+
 except KeyboardInterrupt:
     parser.exit('\nInterrupted by user')
 except Exception as e:
