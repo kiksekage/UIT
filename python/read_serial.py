@@ -123,15 +123,7 @@ def callback_left(indata, outdata, frames, time, status):
   elif experiment == 3:
     outdata[:] = indata*1.25
   elif experiment == 4:
-<<<<<<< HEAD
     outdata[:] = indata*1.5
-=======
-    outdata[:] = lower_pitch(indata)*2
-  elif experiment ==5:
-    outdate[:] = frequency_filter(indata)
-  else:
-    outdata[:] = indata
->>>>>>> 3f9b4ce1e3df6ecc4224bf218af768c8652db6bb
 
 def callback_right(indata, outdata, frames, time, status):
   if the_foot.lifted():
@@ -145,15 +137,7 @@ def callback_right(indata, outdata, frames, time, status):
   elif experiment == 3:
     outdata[:] = indata*1.25
   elif experiment == 4:
-<<<<<<< HEAD
     outdata[:] = indata*1.5
-=======
-    outdata[:] = lower_pitch(indata)*2
-  elif experiment ==5:
-    outdate[:] = frequency_filter(indata)
-  else:
-    outdata[:] = indata
->>>>>>> 3f9b4ce1e3df6ecc4224bf218af768c8652db6bb
 
 the_foot = random.choice([right_foot, left_foot])
 try:
